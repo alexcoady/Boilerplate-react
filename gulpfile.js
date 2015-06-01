@@ -8,8 +8,10 @@ var sass = require("gulp-ruby-sass");
 var autoprefixer = require("gulp-autoprefixer");
 
 // Browserify
-var transform = require("vinyl-transform");
 var browserify = require("browserify");
+var reactify = require("reactify");
+var watchify = require("watchify");
+var source = require("vinyl-source-stream");
 
 // Templating
 var template = require("gulp-template-compile");
@@ -60,17 +62,42 @@ gulp.task("templates", function () {
 
 gulp.task("scripts", function () {
 
-  var browserifyFiles = transform(function(filename) {
-    var b = browserify({entries: filename, debug: false});
-    return b.bundle();
+  // var browserifyFiles = transform(function(filename) {
+  //   var b = browserify({entries: filename, debug: false});
+  //   return b.bundle();
+  // });
+  //
+  // gulp.src( "./source/scripts/main.js" )
+  //   .pipe( browserifyFiles )
+  //   .pipe( preprocess({context:{PRODUCTION: argv.production}})) // Updates constants
+  //   .pipe( gulpif( argv.production, uglify()) )
+  //   .pipe( gulpif( argv.production, rename({suffix: ".min"})) )
+  //   .pipe( gulp.dest("./build/scripts") );
+
+
+  var bundler = browserify({
+    entries: [ "./source/scripts/main.js" ],
+    transform: [ reactify ],
+    debug: true,
+    cache: {},
+    packageCache: {},
+    fullPaths: true
   });
 
-  gulp.src( "./source/scripts/main.js" )
-    .pipe( browserifyFiles )
-    .pipe( preprocess({context:{PRODUCTION: argv.production}})) // Updates constants
-    .pipe( gulpif( argv.production, uglify()) )
-    .pipe( gulpif( argv.production, rename({suffix: ".min"})) )
-    .pipe( gulp.dest("./build/scripts") );
+  var watcher = watchify( bundler );
+
+  return watcher
+          .on( "update", function () {
+            watcher.bundle()
+              .pipe( source( "main.js" ) )
+              .pipe( gulp.dest( "./build/scripts" ) );
+          })
+            .bundle()
+            .pipe( source( "main.js" ) )
+            .pipe( gulp.dest( "./build/scripts" ) );
+
+
+
 });
 
 
