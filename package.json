@@ -1,5 +1,5 @@
 {
-  "name": "boilerplate-backbone-browserify",
+  "name": "boilerplate-react",
   "version": "0.0.1",
   "description": "",
   "author": "Alex Coady <alexandercoady@me.com>",
@@ -12,9 +12,9 @@
   "main": "build/main.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alexcoady/Boilerplate-backbone-browserify"
+    "url": "https://github.com/alexcoady/Boilerplate-react"
   },
-  "bugs": "https://github.com/alexcoady/Boilerplate-backbone-browserify/issues",
+  "bugs": "https://github.com/alexcoady/Boilerplate-react/issues",
   "private": true,
   "devDependencies": {
     "browser-sync": "^2.7.1",
