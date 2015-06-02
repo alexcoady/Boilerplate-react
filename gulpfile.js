@@ -37,6 +37,7 @@ gulp.task("browser-sync", function () {
   browserSync({
     server: {
       baseDir: "./build/",
+      port: 3001,
       middleware: [
         connectRewrite([
           "!\\.\\w+$ /index.html [L]"
