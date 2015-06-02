@@ -36,6 +36,7 @@
     "yargs": "^3.8.0"
   },
   "dependencies": {
+    "jquery": "^2.1.4",
     "react": "^0.13.3",
     "reactify": "^1.1.1"
   }
