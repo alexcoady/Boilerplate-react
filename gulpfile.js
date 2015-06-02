@@ -109,6 +109,13 @@ gulp.task("copy:images", function () {
 });
 
 
+gulp.task("copy:data", function () {
+
+  gulp.src( "./source/data/**/*.*" )
+    .pipe( gulp.dest("./build/data") );
+});
+
+
 gulp.task("copy:vendor", function () {
 
   gulp.src(["./source/scripts/vendor/**/*.*" ])
@@ -141,7 +148,7 @@ gulp.task("sass", function () {
 
 
 // High level tasks
-gulp.task("copy", [ "copy:vendor", "copy:html", "copy:images" ]);
+gulp.task("copy", [ "copy:vendor", "copy:html", "copy:images", "copy:data" ]);
 
 gulp.task("default", [ "templates", "scripts", "sass", "copy" ]);
 
@@ -151,6 +158,7 @@ gulp.task("watch", [ "default", "browser-sync" ], function () {
   gulp.watch([ "source/templates/**/*.html" ], [ "templates" ] );
   gulp.watch([ "source/*.html" ], [ "copy:html", browserSync.reload ] );
   gulp.watch([ "source/images/**/*.*" ], [ "copy:images" ] );
+  gulp.watch([ "source/data/**/*.*" ], [ "copy:data" ] );
   gulp.watch([ "source/style/**/*.scss" ], [ "sass" ]);
 
   gulp.watch([ "build/**/*.{js,html,css}" ], browserSync.reload );
