@@ -13,9 +13,6 @@ var reactify = require("reactify");
 var watchify = require("watchify");
 var source = require("vinyl-source-stream");
 
-// Templating
-var template = require("gulp-template-compile");
-var concat = require("gulp-concat");
 
 // Minification
 var minifycss = require("gulp-minify-css");
@@ -51,29 +48,9 @@ gulp.task("browser-sync", function () {
 });
 
 
-gulp.task("templates", function () {
-
-  gulp.src( "./source/templates/**/*.html" )
-    .pipe( template() )
-    .pipe( concat("templates.js") )
-    .pipe( gulp.dest("./source/templates") );
-});
 
 
 gulp.task("scripts", function () {
-
-  // var browserifyFiles = transform(function(filename) {
-  //   var b = browserify({entries: filename, debug: false});
-  //   return b.bundle();
-  // });
-  //
-  // gulp.src( "./source/scripts/main.js" )
-  //   .pipe( browserifyFiles )
-  //   .pipe( preprocess({context:{PRODUCTION: argv.production}})) // Updates constants
-  //   .pipe( gulpif( argv.production, uglify()) )
-  //   .pipe( gulpif( argv.production, rename({suffix: ".min"})) )
-  //   .pipe( gulp.dest("./build/scripts") );
-
 
   var bundler = browserify({
     entries: [ "./source/scripts/main.js" ],
@@ -87,17 +64,14 @@ gulp.task("scripts", function () {
   var watcher = watchify( bundler );
 
   return watcher
-          .on( "update", function () {
-            watcher.bundle()
-              .pipe( source( "main.js" ) )
-              .pipe( gulp.dest( "./build/scripts" ) );
-          })
-            .bundle()
-            .pipe( source( "main.js" ) )
-            .pipe( gulp.dest( "./build/scripts" ) );
-
-
-
+    .on( "update", function () {
+      watcher.bundle()
+        .pipe( source( "main.js" ) )
+        .pipe( gulp.dest( "./build/scripts" ) );
+    })
+    .bundle()
+    .pipe( source( "main.js" ) )
+    .pipe( gulp.dest( "./build/scripts" ) );
 });
 
 
@@ -150,12 +124,11 @@ gulp.task("sass", function () {
 // High level tasks
 gulp.task("copy", [ "copy:vendor", "copy:html", "copy:images", "copy:data" ]);
 
-gulp.task("default", [ "templates", "scripts", "sass", "copy" ]);
+gulp.task("default", [ "scripts", "sass", "copy" ]);
 
 gulp.task("watch", [ "default", "browser-sync" ], function () {
 
-  gulp.watch([ "source/scripts/**/*.{js,json}", "source/templates/templates.js" ], [ "scripts" ] );
-  gulp.watch([ "source/templates/**/*.html" ], [ "templates" ] );
+  gulp.watch([ "source/scripts/**/*.{js,json}"], [ "scripts" ] );
   gulp.watch([ "source/*.html" ], [ "copy:html", browserSync.reload ] );
   gulp.watch([ "source/images/**/*.*" ], [ "copy:images" ] );
   gulp.watch([ "source/data/**/*.*" ], [ "copy:data" ] );
